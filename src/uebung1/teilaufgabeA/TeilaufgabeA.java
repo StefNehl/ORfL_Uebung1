@@ -13,19 +13,21 @@ public class TeilaufgabeA
 
         var probService = new ProbabilityService();
 
-        var probabilityMatrix = new SimpleMatrix(10, 10);
+        var probabilityMatrix = new SimpleMatrix(15, 15);
 
         for(int c = 0; c < probabilityMatrix.numCols(); c++)
         {
             for(int r = 0; r < probabilityMatrix.numRows(); r++)
             {
-                if(r <= c)
+                if(r > c)
                 {
-
+                    var diceNumber = r - c;
+                    var numberProb = probService.getDiceProbabilityForNumber(diceNumber);
+                    probabilityMatrix.set(r, c, numberProb);
                 }
                 else
                 {
-                    var diceNumber = r - c;
+                    var diceNumber = c - r;
                     var numberProb = probService.getDiceProbabilityForNumber(diceNumber);
                     probabilityMatrix.set(r, c, numberProb);
                 }
@@ -43,6 +45,11 @@ public class TeilaufgabeA
         }
 
         System.out.println(result);
+        checkMarkovMatrix(result);
+
+        PlottingService.plotHistogramForGame(probabilityMatrix, result);
+
+
     }
 
     public static void testProbService()
@@ -52,9 +59,8 @@ public class TeilaufgabeA
 
         System.out.println("Prob Array");
         System.out.print("[ ");
-        for(int i = 0; i < probArray.length; i++)
-        {
-            System.out.print(probArray[i] + ", ");
+        for (double v : probArray) {
+            System.out.print(v + ", ");
         }
         System.out.println(" ]");
 
@@ -72,8 +78,9 @@ public class TeilaufgabeA
             {
                 columnSum += matrix.get(r, c);
             }
-            if(columnSum != 1.0)
-                System.out.println("Error in r: " + r + " Sum was: " + columnSum);
+            double roundedSum = (double) Math.round(columnSum * 100.0)/100.0;
+            if(roundedSum != 1.0)
+                System.out.println("Error in r: " + r + " Sum was: " + roundedSum);
         }
     }
 

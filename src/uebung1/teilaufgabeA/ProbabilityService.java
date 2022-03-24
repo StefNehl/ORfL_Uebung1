@@ -48,7 +48,7 @@ public class ProbabilityService
 
     public double getDiceProbabilityForNumber(int number)
     {
-        if(number < 2 || number >= 12)
+        if(number < 2 || number > 12)
             return 0;
 
         var index = number - 1;
