@@ -1,6 +1,5 @@
 package uebung1.teilaufgabeA;
 
-import org.ejml.dense.fixed.CommonOps_DDF5;
 import org.ejml.simple.SimpleMatrix;
 
 public class TeilaufgabeA
@@ -8,28 +7,45 @@ public class TeilaufgabeA
     public static void main(String[] args)
     {
         testProbService();
-        final int NUMBER_OF_ITERATIONS = 30;
-        final double WIN_PROBABILITY = 0.1;
+        final int NUMBER_OF_MOVES = 30;
+        final int MAX_DICE_NUMBER = 12;
+        final int BOARD_SIZE = 20;
 
         var probService = new ProbabilityService();
 
-        var probabilityMatrix = new SimpleMatrix(15, 15);
+        var probabilityMatrix = new SimpleMatrix(BOARD_SIZE, BOARD_SIZE);
 
         for(int c = 0; c < probabilityMatrix.numCols(); c++)
         {
             for(int r = 0; r < probabilityMatrix.numRows(); r++)
             {
+                if(r == c)
+                    continue;
+
+
                 if(r > c)
                 {
                     var diceNumber = r - c;
                     var numberProb = probService.getDiceProbabilityForNumber(diceNumber);
                     probabilityMatrix.set(r, c, numberProb);
+
+                    var currentRange = r + MAX_DICE_NUMBER;
+                    var remainingRange = currentRange - BOARD_SIZE;
+                    if(remainingRange <= 0)
+                        continue;
                 }
-                else
+
+                if(r < c)
                 {
-                    var diceNumber = c - r;
+                    var currentRange = r + MAX_DICE_NUMBER;
+                    var remainingRange = currentRange - BOARD_SIZE;
+                    if(remainingRange <= 0)
+                        continue;
+
+                    var diceNumber = MAX_DICE_NUMBER - remainingRange;
                     var numberProb = probService.getDiceProbabilityForNumber(diceNumber);
-                    probabilityMatrix.set(r, c, numberProb);
+                    probabilityMatrix.set(remainingRange - 1, c, numberProb);
+                    continue;
                 }
             }
         }
@@ -39,7 +55,7 @@ public class TeilaufgabeA
 
         var result = probabilityMatrix.copy();
 
-        for (int i = 0; i < 30 ; i++)
+        for (int i = 0; i < NUMBER_OF_MOVES ; i++)
         {
             result = result.mult(probabilityMatrix);
         }
@@ -47,7 +63,7 @@ public class TeilaufgabeA
         System.out.println(result);
         checkMarkovMatrix(result);
 
-        PlottingService.plotHistogramForGame(probabilityMatrix, result);
+        //PlottingService.plotBarChartForGame(probabilityMatrix, result, NUMBER_OF_MOVES);
 
 
     }

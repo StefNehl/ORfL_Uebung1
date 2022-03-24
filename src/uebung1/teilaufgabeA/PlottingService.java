@@ -5,13 +5,9 @@ import org.ejml.simple.SimpleMatrix;
 import org.knowm.xchart.*;
 import org.knowm.xchart.style.Styler;
 
-import java.util.Arrays;
-import java.util.stream.Collectors;
-import java.util.stream.DoubleStream;
-
 public class PlottingService
 {
-    public static void plotHistogramForGame(SimpleMatrix firstMove, SimpleMatrix nMove)
+    public static void plotBarChartForGame(SimpleMatrix firstMove, SimpleMatrix nMove, int numberOfMoves)
     {
         // Create Chart
         CategoryChart chart = new CategoryChartBuilder()
@@ -38,7 +34,7 @@ public class PlottingService
                 firstMoveProbArray);
 
         var nMoveProbArray = getMovementDataFromStart(nMove);
-        chart.addSeries("N Move",
+        chart.addSeries(numberOfMoves + " Move",
                 firstMoveTileArray,
                 nMoveProbArray);
 
