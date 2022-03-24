@@ -34,7 +34,7 @@ public class PlottingService
                 firstMoveProbArray);
 
         var nMoveProbArray = getMovementDataFromStart(nMove);
-        chart.addSeries(numberOfMoves + " Move",
+        chart.addSeries(numberOfMoves + " Moves",
                 firstMoveTileArray,
                 nMoveProbArray);
 
