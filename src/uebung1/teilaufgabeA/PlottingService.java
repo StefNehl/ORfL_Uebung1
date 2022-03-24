@@ -5,9 +5,11 @@ import org.ejml.simple.SimpleMatrix;
 import org.knowm.xchart.*;
 import org.knowm.xchart.style.Styler;
 
+import java.util.Map;
+
 public class PlottingService
 {
-    public static void plotBarChartForGame(SimpleMatrix firstMove, SimpleMatrix nMove, int numberOfMoves)
+    public static void plotBarChartForGame(Map<Integer, SimpleMatrix> moves, int boardSize)
     {
         // Create Chart
         CategoryChart chart = new CategoryChartBuilder()
@@ -22,35 +24,41 @@ public class PlottingService
         chart.getStyler().setLegendPosition(Styler.LegendPosition.InsideNW);
 
 
-        var firstMoveTileArray = new double[firstMove.numRows()];
-        for(int i = 0; i < firstMoveTileArray.length; i++)
+        var tileArray = new double[boardSize];
+        for(int i = 0; i < tileArray.length; i++)
         {
-            firstMoveTileArray[i] = i;
+            tileArray[i] = i;
         }
 
-        var firstMoveProbArray = getMovementDataFromStart(firstMove);
-        chart.addSeries("First Move",
-                firstMoveTileArray,
-                firstMoveProbArray);
-
-        var nMoveProbArray = getMovementDataFromStart(nMove);
-        chart.addSeries(numberOfMoves + " Moves",
-                firstMoveTileArray,
-                nMoveProbArray);
+        for (Integer i : moves.keySet())
+        {
+            AddSeriesForData(chart, i, moves.get(i), tileArray);
+        }
 
         new SwingWrapper<CategoryChart>(chart).displayChart();
     }
 
+    private static void AddSeriesForData(CategoryChart chart, int numberOfMoves, SimpleMatrix matrix, double[] tileArray)
+    {
+        String title = numberOfMoves + " Moves";
+
+        if(numberOfMoves == 1)
+            title = numberOfMoves + "Move";
+
+        var firstMoveProbArray = getMovementDataFromStart(matrix);
+        chart.addSeries(title,
+                tileArray,
+                firstMoveProbArray);
+    }
+
     private static double[] getMovementDataFromStart(SimpleMatrix matrix)
     {
-        var matrixData = ((DMatrixRMaj)matrix.getMatrix()).getData();
         var tiles = matrix.numRows();
-
         var result = new double[tiles];
 
         for(int i = 0; i < result.length; i++)
         {
-            result[i] = matrixData[i];
+            result[i] = matrix.get(i, 0);
         }
 
         return result;

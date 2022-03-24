@@ -2,14 +2,16 @@ package uebung1.teilaufgabeA;
 
 import org.ejml.simple.SimpleMatrix;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class TeilaufgabeA
 {
     public static void main(String[] args)
     {
         testProbService();
-        final int NUMBER_OF_MOVES = 30;
         final int MAX_DICE_NUMBER = 12;
-        final int BOARD_SIZE = 20;
+        final int BOARD_SIZE = 40;
 
         var probService = new ProbabilityService();
 
@@ -37,17 +39,23 @@ public class TeilaufgabeA
         System.out.println(probabilityMatrix);
         checkMarkovMatrix(probabilityMatrix);
 
-        var result = probabilityMatrix.copy();
+        var movements = new HashMap<Integer, SimpleMatrix>();
+        movements.put(1, probabilityMatrix);
 
-        for (int i = 0; i < NUMBER_OF_MOVES ; i++)
+        var copyOfProbMatrix = probabilityMatrix.copy();
+
+        int maxIterations = 30;
+
+        for (int i = 0; i < maxIterations; i++)
         {
-            result = result.mult(probabilityMatrix);
+            copyOfProbMatrix = copyOfProbMatrix.mult(copyOfProbMatrix);
+            checkMarkovMatrix(copyOfProbMatrix);
+
+            if(i == 1 || i == 2 || i == maxIterations-1)
+                movements.put(i + 1, copyOfProbMatrix);
         }
 
-        System.out.println(result);
-        checkMarkovMatrix(result);
-
-        PlottingService.plotBarChartForGame(probabilityMatrix, result, NUMBER_OF_MOVES);
+        PlottingService.plotBarChartForGame(movements, BOARD_SIZE);
 
 
     }
