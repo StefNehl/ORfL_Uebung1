@@ -1,4 +1,4 @@
-package uebung1.teilaufgabeA;
+package uebung1.teilaufgaben;
 
 import org.ejml.data.DMatrixRMaj;
 import org.ejml.simple.SimpleMatrix;

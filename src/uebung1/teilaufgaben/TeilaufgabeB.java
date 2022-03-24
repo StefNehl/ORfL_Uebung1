@@ -1,15 +1,13 @@
-package uebung1.teilaufgabeA;
+package uebung1.teilaufgaben;
 
 import org.ejml.simple.SimpleMatrix;
 
 import java.util.HashMap;
-import java.util.Map;
 
-public class TeilaufgabeA
+public class TeilaufgabeB
 {
     public static void main(String[] args)
     {
-        testProbService();
         final int MAX_DICE_NUMBER = 12;
         final int BOARD_SIZE = 40;
 
@@ -37,7 +35,7 @@ public class TeilaufgabeA
         }
 
         System.out.println(probabilityMatrix);
-        checkMarkovMatrix(probabilityMatrix);
+        MatrixTester.checkMarkovMatrix(probabilityMatrix);
 
         var movements = new HashMap<Integer, SimpleMatrix>();
         movements.put(1, probabilityMatrix);
@@ -49,7 +47,7 @@ public class TeilaufgabeA
         for (int i = 0; i < maxIterations; i++)
         {
             copyOfProbMatrix = copyOfProbMatrix.mult(copyOfProbMatrix);
-            checkMarkovMatrix(copyOfProbMatrix);
+            MatrixTester.checkMarkovMatrix(copyOfProbMatrix);
 
             if(i == 1 || i == 2 || i == maxIterations-1)
                 movements.put(i + 1, copyOfProbMatrix);
@@ -59,37 +57,4 @@ public class TeilaufgabeA
 
 
     }
-
-    public static void testProbService()
-    {
-        var service = new ProbabilityService();
-        var probArray = service.getDiceProbabilityArray();
-
-        System.out.println("Prob Array");
-        System.out.print("[ ");
-        for (double v : probArray) {
-            System.out.print(v + ", ");
-        }
-        System.out.println(" ]");
-
-        System.out.println(service.getDiceProbabilityForNumber(7));
-        System.out.println(service.getDiceProbabilityForNumber(1));
-        System.out.println(service.getDiceProbabilityForNumber(13));
-    }
-
-    public static void checkMarkovMatrix(SimpleMatrix matrix)
-    {
-        for(int r = 0; r < matrix.numRows(); r++)
-        {
-            var columnSum = 0.0;
-            for(int c = 0; c < matrix.numCols(); c++)
-            {
-                columnSum += matrix.get(r, c);
-            }
-            double roundedSum = (double) Math.round(columnSum * 100.0)/100.0;
-            if(roundedSum != 1.0)
-                System.out.println("Error in r: " + r + " Sum was: " + roundedSum);
-        }
-    }
-
 }
