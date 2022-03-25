@@ -42,7 +42,7 @@ public class PlottingService
         String title = numberOfMoves + " Moves";
 
         if(numberOfMoves == 1)
-            title = numberOfMoves + "Move";
+            title = numberOfMoves + " Move";
 
         var firstMoveProbArray = getMovementDataFromStart(matrix);
         chart.addSeries(title,
@@ -52,12 +52,12 @@ public class PlottingService
 
     private static double[] getMovementDataFromStart(SimpleMatrix matrix)
     {
-        var tiles = matrix.numRows();
+        var tiles = matrix.numCols();
         var result = new double[tiles];
 
         for(int i = 0; i < result.length; i++)
         {
-            result[i] = matrix.get(i, 0);
+            result[i] = matrix.get(0, i);
         }
 
         return result;

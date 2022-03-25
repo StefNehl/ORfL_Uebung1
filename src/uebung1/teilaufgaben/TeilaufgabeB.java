@@ -34,6 +34,14 @@ public class TeilaufgabeB
             }
         }
 
+        //Add BackToStart
+        //If tile 8 => back to 1
+        probabilityMatrix.set(0, 7, 1);
+        probabilityMatrix.set(0, 18, 1);
+        probabilityMatrix.set(0, 34, 1);
+
+
+
         System.out.println(probabilityMatrix);
         MatrixTester.checkMarkovMatrix(probabilityMatrix);
 
@@ -41,12 +49,11 @@ public class TeilaufgabeB
         movements.put(1, probabilityMatrix);
 
         var copyOfProbMatrix = probabilityMatrix.copy();
-
-        int maxIterations = 30;
+        int maxIterations = 5;
 
         for (int i = 0; i < maxIterations; i++)
         {
-            copyOfProbMatrix = copyOfProbMatrix.mult(copyOfProbMatrix);
+            copyOfProbMatrix = probabilityMatrix.mult(copyOfProbMatrix);
             MatrixTester.checkMarkovMatrix(copyOfProbMatrix);
 
             if(i == 1 || i == 2 || i == maxIterations-1)

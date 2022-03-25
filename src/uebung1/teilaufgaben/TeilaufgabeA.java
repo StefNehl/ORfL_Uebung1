@@ -16,18 +16,18 @@ public class TeilaufgabeA
 
         var probabilityMatrix = new SimpleMatrix(BOARD_SIZE, BOARD_SIZE);
 
-        for(int c = 0; c < probabilityMatrix.numCols(); c++)
+        for(int r = 0; r < probabilityMatrix.numCols(); r++)
         {
-            int rowToStart = c + 1;
+            int columnToStart = r + 1;
 
-            for(int r = rowToStart; r < rowToStart + MAX_DICE_NUMBER; r++)
+            for(int c = columnToStart; c < columnToStart + MAX_DICE_NUMBER; c++)
             {
-                var diceNumber = r - c;
+                var diceNumber = c - r ;
                 var numberProb = probService.getDiceProbabilityForNumber(diceNumber);
 
-                if(r >= BOARD_SIZE)
+                if(c >= BOARD_SIZE)
                 {
-                    probabilityMatrix.set(r - BOARD_SIZE, c, numberProb);
+                    probabilityMatrix.set(r , c- BOARD_SIZE, numberProb);
                     continue;
                 }
 
@@ -50,7 +50,7 @@ public class TeilaufgabeA
             copyOfProbMatrix = probabilityMatrix.mult(copyOfProbMatrix);
             MatrixTester.checkMarkovMatrix(copyOfProbMatrix);
 
-            if(i == 1 || i == 2 || i == maxIterations-1)
+            if(i == 1 || i == 2 || i == 3 || i == maxIterations-1)
                 movements.put(i + 1, copyOfProbMatrix);
         }
 
