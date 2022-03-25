@@ -54,4 +54,9 @@ public class ProbabilityService
         var index = number - 1;
         return propArray[index];
     }
+
+    public double getPaschProbability()
+    {
+        return (1.0/36.0);
+    }
 }

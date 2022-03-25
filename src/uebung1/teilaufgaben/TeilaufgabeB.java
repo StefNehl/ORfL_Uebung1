@@ -37,10 +37,10 @@ public class TeilaufgabeB
         //Add BackToStart
         //If tile 8 => back to 1
         //For tile 8, 18, 34 (-1 for index)
-
+        int startField = 0;
         for(int i = 0; i < probabilityMatrix.numCols(); i++)
         {
-            if(i == 0)
+            if(i == startField)
             {
                 probabilityMatrix.set(7, i, 1);
                 probabilityMatrix.set(17, i, 1);
@@ -55,9 +55,10 @@ public class TeilaufgabeB
         //To Jail
         //if tile 23 => back to 11
         //For tile 23, 31 (-1 for index)
+        int jailField = 10;
         for(int i = 0; i < probabilityMatrix.numCols(); i++)
         {
-            if(i == 10)
+            if(i == jailField)
             {
                 probabilityMatrix.set(22, i, 1);
                 probabilityMatrix.set(30, i, 1);
@@ -67,7 +68,23 @@ public class TeilaufgabeB
             probabilityMatrix.set(30, i, 0);
         }
 
+        //Get out of Jail
+        //If Pasch => get out of jail
+        //For tile 11 (-1 for index)
+        int columnToStart = jailField + 1;
+        double sumOfProbabilityToGetOutOfJail = 0;
+        for(int c = columnToStart; c < columnToStart + MAX_DICE_NUMBER; c++)
+        {
+            var diceNumber = c - 10 ;
+            var numberProb = probService.getDiceProbabilityForNumber(diceNumber) *
+                    probService.getPaschProbability();
 
+            sumOfProbabilityToGetOutOfJail += numberProb;
+            probabilityMatrix.set(jailField, c, numberProb);
+        }
+
+        //Stay in jail
+        probabilityMatrix.set(jailField, jailField, 1 - sumOfProbabilityToGetOutOfJail);
 
 
 
