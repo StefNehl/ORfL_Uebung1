@@ -17,10 +17,12 @@ public class TeilaufgabeB
         int turnsToGetOutOfJail = 3;
         int numberOfJailFields = turnsToGetOutOfJail - 1; //one field is already included
 
-        var probService = new ProbabilityService();
-        var probabilityMatrix = new SimpleMatrix(BOARD_SIZE + numberOfJailFields, BOARD_SIZE + numberOfJailFields);
+        int numberOfStates = BOARD_SIZE + numberOfJailFields;
 
-        for(int r = 0; r < probabilityMatrix.numCols(); r++)
+        var probService = new ProbabilityService();
+        var probabilityMatrix = new SimpleMatrix(numberOfStates, numberOfStates);
+
+        for(int r = 0; r < probabilityMatrix.numRows(); r++)
         {
             if(r >= jailField && r < jailField + numberOfJailFields)
                 continue;
@@ -31,9 +33,9 @@ public class TeilaufgabeB
                 var diceNumber = c - r ;
                 var numberProb = probService.getDiceProbabilityForNumber(diceNumber);
 
-                if(c >= BOARD_SIZE)
+                if(c >= numberOfStates)
                 {
-                    probabilityMatrix.set(r , c- BOARD_SIZE, numberProb);
+                    probabilityMatrix.set(r , c - numberOfStates, numberProb);
                     continue;
                 }
 
@@ -116,10 +118,11 @@ public class TeilaufgabeB
             copyOfProbMatrix = probabilityMatrix.mult(copyOfProbMatrix);
             MatrixTester.checkMarkovMatrix(copyOfProbMatrix);
 
-            if(i == 1 || i == 2 || i == 3 || i == maxIterations-1)
+            if(i == 1 || i == 2 || i == 3 || i == 4 || i == maxIterations-1)
                 movements.put(i + 1, copyOfProbMatrix);
         }
 
-        PlottingService.plotBarChartForGame(movements, BOARD_SIZE + numberOfJailFields);
+        movements.get(maxIterations);
+        PlottingService.plotBarChartForGame(movements, numberOfStates);
     }
 }
