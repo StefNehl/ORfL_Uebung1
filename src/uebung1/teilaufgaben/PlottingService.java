@@ -15,7 +15,7 @@ public class PlottingService
                 .width(800)
                 .height(600)
                 .title("Game Probability")
-                .xAxisTitle("Field")
+                .xAxisTitle("Tile")
                 .yAxisTitle("Probability")
                 .build();
 
