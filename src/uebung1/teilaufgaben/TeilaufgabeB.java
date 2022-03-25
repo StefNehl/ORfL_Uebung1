@@ -22,7 +22,7 @@ public class TeilaufgabeB
 
         for(int r = 0; r < probabilityMatrix.numCols(); r++)
         {
-            if(r > jailField && r <= jailField + numberOfJailFields)
+            if(r >= jailField && r < jailField + numberOfJailFields)
                 continue;
 
             int columnToStart = r + 1;
@@ -76,20 +76,10 @@ public class TeilaufgabeB
         //Get out of Jail
         //If Pasch => get out of jail
         //For tile 11 (-1 for index)
-        for(int r = jailField; r <= jailField + numberOfJailFields; r++)
+        int tries = 0;
+        for(int r = jailField; r < jailField + numberOfJailFields; r++)
         {
-            int columnToStart = jailField + 1;
-            if(r == numberOfJailFields + jailField)
-            {
-                for(int c = columnToStart; c < columnToStart + MAX_DICE_NUMBER; c++)
-                {
-                    var diceNumber = c - 10 ;
-                    var numberProb = probService.getDiceProbabilityForNumber(diceNumber);
-
-                    probabilityMatrix.set(r, c, numberProb);
-                }
-                continue;
-            }
+            int columnToStart = jailField + numberOfJailFields + tries + 1;
 
             double sumOfProbabilityToGetOutOfJail = 0;
             for(int c = columnToStart; c < columnToStart + MAX_DICE_NUMBER; c++)
@@ -102,11 +92,13 @@ public class TeilaufgabeB
                 probabilityMatrix.set(r, c, numberProb);
             }
 
-            probabilityMatrix.set(r, jailField, 1 - sumOfProbabilityToGetOutOfJail);
+
+            //Stay in jail for next turn => next state(column)
+            probabilityMatrix.set(r, jailField + tries, 1 - sumOfProbabilityToGetOutOfJail);
+            tries++;
         }
 
 
-        //Stay in jail
 
 
 
@@ -129,7 +121,5 @@ public class TeilaufgabeB
         }
 
         PlottingService.plotBarChartForGame(movements, BOARD_SIZE + numberOfJailFields);
-
-
     }
 }
