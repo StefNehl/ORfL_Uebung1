@@ -26,7 +26,7 @@ public class PlottingService
         var tileArray = new double[boardSize];
         for(int i = 0; i < tileArray.length; i++)
         {
-            tileArray[i] = i;
+            tileArray[i] = i + 1;
         }
 
         for (Integer i : moves.keySet())
