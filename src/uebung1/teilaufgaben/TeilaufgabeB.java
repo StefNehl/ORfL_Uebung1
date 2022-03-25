@@ -52,6 +52,21 @@ public class TeilaufgabeB
             probabilityMatrix.set(33, i, 0);
         }
 
+        //To Jail
+        //if tile 23 => back to 11
+        //For tile 23, 31 (-1 for index)
+        for(int i = 0; i < probabilityMatrix.numCols(); i++)
+        {
+            if(i == 10)
+            {
+                probabilityMatrix.set(22, i, 1);
+                probabilityMatrix.set(30, i, 1);
+                continue;
+            }
+            probabilityMatrix.set(22, i, 0);
+            probabilityMatrix.set(30, i, 0);
+        }
+
 
 
 
