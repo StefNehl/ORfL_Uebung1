@@ -87,7 +87,7 @@ public class TeilaufgabeB
             for(int c = columnToStart; c < columnToStart + MAX_DICE_NUMBER; c++)
             {
                 var diceNumber = c - 10 ;
-                var numberProb = probService.getDiceProbabilityForNumber(diceNumber) *
+                var numberProb = probService.getPaschProbabilityForNumber(diceNumber) *
                         probService.getPaschProbability();
 
                 sumOfProbabilityToGetOutOfJail += numberProb;
@@ -117,6 +117,16 @@ public class TeilaufgabeB
             if(i == 1 || i == 2 || i == 3 || i == 4 || i == maxIterations-1)
                 movements.put(i + 1, copyOfProbMatrix);
         }
+
+        System.out.println(copyOfProbMatrix);
+
+        //Plot results
+        System.out.print("Field Probability: [");
+        for(int i = 0; i < copyOfProbMatrix.numCols(); i++)
+        {
+            System.out.print(copyOfProbMatrix.get(0, i) + ", ");
+        }
+        System.out.println("]");
 
         movements.get(maxIterations);
         PlottingService.plotBarChartForGame(movements, numberOfStates, jailField +1, numberOfJailFields);

@@ -6,6 +6,7 @@ import org.ejml.simple.SimpleMatrix;
 public class ProbabilityService
 {
     private double[] propArray;
+    private double[] paschProbArray;
 
     public ProbabilityService()
     {
@@ -24,6 +25,7 @@ public class ProbabilityService
             }
         }
 
+        //Added prob array for dice
         var matrixData = ((DMatrixRMaj)propMatrix.getMatrix()).getData();
         propArray = new double[numberOfDices * faces];
         for(int i = 0; i < propArray.length; i++)
@@ -40,23 +42,44 @@ public class ProbabilityService
             propArray[i] = (double) count / numberOfOutcomes;
         }
 
+        //Added prob array for pasch
+        paschProbArray = new double[numberOfDices * faces];
+        for(int i = 0; i < paschProbArray.length; i++)
+        {
+            if((i + 1) % 2 == 0)
+                paschProbArray[i] = (double) 1 / numberOfOutcomes;
+        }
     }
     public double[] getDiceProbabilityArray()
     {
         return propArray;
     }
 
-    public double getDiceProbabilityForNumber(int number)
+    public double getDiceProbabilityForNumber(int fieldNumber)
     {
-        if(number < 2 || number > 12)
+        if(fieldNumber < 2 || fieldNumber > 12)
             return 0;
 
-        var index = number - 1;
+        var index = fieldNumber - 1;
         return propArray[index];
+    }
+
+    public double[] getPaschProbabilityArray()
+    {
+        return paschProbArray;
+    }
+
+    public double getPaschProbabilityForNumber(int fieldNumber)
+    {
+        if(fieldNumber < 2 || fieldNumber > 12)
+            return 0;
+
+        var index = fieldNumber - 1;
+        return paschProbArray[index];
     }
 
     public double getPaschProbability()
     {
-        return (1.0/36.0);
+        return (1.0/6.0);
     }
 }
