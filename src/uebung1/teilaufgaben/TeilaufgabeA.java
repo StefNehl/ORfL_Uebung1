@@ -54,7 +54,7 @@ public class TeilaufgabeA
                 movements.put(i + 1, copyOfProbMatrix);
         }
 
-        PlottingService.plotBarChartForGame(movements, BOARD_SIZE);
+        PlottingService.plotBarChartForGame(movements, BOARD_SIZE, -1, 0);
 
 
     }

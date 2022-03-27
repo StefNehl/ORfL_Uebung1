@@ -4,11 +4,13 @@ import org.ejml.simple.SimpleMatrix;
 import org.knowm.xchart.*;
 import org.knowm.xchart.style.Styler;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class PlottingService
 {
-    public static void plotBarChartForGame(Map<Integer, SimpleMatrix> moves, int boardSize)
+    public static void plotBarChartForGame(Map<Integer, SimpleMatrix> moves, int boardSize, int jailField, int numbersUntilOutOfJail)
     {
         // Create Chart
         CategoryChart chart = new CategoryChartBuilder()
@@ -22,11 +24,27 @@ public class PlottingService
         // Customize Chart
         chart.getStyler().setLegendPosition(Styler.LegendPosition.InsideNW);
 
+        var jailIndex = jailField - 1;
+        var lastJailIndex = jailIndex + numbersUntilOutOfJail;
+        var jailCount = 1;
 
-        var tileArray = new double[boardSize];
-        for(int i = 0; i < tileArray.length; i++)
+        var tileArray = new ArrayList<String>();
+        for(int i = 0; i < boardSize; i++)
         {
-            tileArray[i] = i + 1;
+            if(jailCount >= 0 && i >= jailIndex && i <= lastJailIndex)
+            {
+                tileArray.add("J" + jailCount);
+                jailCount++;
+                continue;
+            }
+
+            if(i == 0)
+            {
+                tileArray.add("S");
+                continue;
+            }
+
+            tileArray.add(i + 1 + "");
         }
 
         for (Integer i : moves.keySet())
@@ -37,7 +55,7 @@ public class PlottingService
         new SwingWrapper<CategoryChart>(chart).displayChart();
     }
 
-    private static void AddSeriesForData(CategoryChart chart, int numberOfMoves, SimpleMatrix matrix, double[] tileArray)
+    private static void AddSeriesForData(CategoryChart chart, int numberOfMoves, SimpleMatrix matrix, List<String> tileArray)
     {
         String title = numberOfMoves + " Moves";
 
@@ -50,14 +68,14 @@ public class PlottingService
                 firstMoveProbArray);
     }
 
-    private static double[] getMovementDataFromStart(SimpleMatrix matrix)
+    private static List<Double> getMovementDataFromStart(SimpleMatrix matrix)
     {
         var tiles = matrix.numCols();
-        var result = new double[tiles];
+        var result = new ArrayList<Double>();
 
-        for(int i = 0; i < result.length; i++)
+        for(int i = 0; i < tiles; i++)
         {
-            result[i] = matrix.get(0, i);
+            result.add(matrix.get(0, i));
         }
 
         return result;

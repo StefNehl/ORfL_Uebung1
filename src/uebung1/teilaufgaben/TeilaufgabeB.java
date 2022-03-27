@@ -100,10 +100,6 @@ public class TeilaufgabeB
             tries++;
         }
 
-
-
-
-
         System.out.println(probabilityMatrix);
         MatrixTester.checkMarkovMatrix(probabilityMatrix);
 
@@ -123,6 +119,6 @@ public class TeilaufgabeB
         }
 
         movements.get(maxIterations);
-        PlottingService.plotBarChartForGame(movements, numberOfStates);
+        PlottingService.plotBarChartForGame(movements, numberOfStates, jailField +1, numberOfJailFields);
     }
 }
