@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class PlottingService
 {
-    public static void plotBarChartForGame(Map<Integer, SimpleMatrix> moves, int boardSize, int jailField, int numbersUntilOutOfJail)
+    public static void plotBarChartForGame(Map<String, SimpleMatrix> moves, int boardSize, int jailField, int numbersUntilOutOfJail)
     {
         // Create Chart
         CategoryChart chart = new CategoryChartBuilder()
@@ -33,7 +33,7 @@ public class PlottingService
         {
             if(i == jailIndex)
             {
-                tileArray.add("JB");
+                tileArray.add("JV");
                 continue;
             }
             if(jailCount >= 0 && i > jailIndex && i <= lastJailIndex)
@@ -52,7 +52,7 @@ public class PlottingService
             tileArray.add(i + 1 + "");
         }
 
-        for (Integer i : moves.keySet())
+        for (String i : moves.keySet())
         {
             AddSeriesForData(chart, i, moves.get(i), tileArray);
         }
@@ -60,15 +60,10 @@ public class PlottingService
         new SwingWrapper<CategoryChart>(chart).displayChart();
     }
 
-    private static void AddSeriesForData(CategoryChart chart, int numberOfMoves, SimpleMatrix matrix, List<String> tileArray)
+    private static void AddSeriesForData(CategoryChart chart, String nameOfMovement, SimpleMatrix matrix, List<String> tileArray)
     {
-        String title = numberOfMoves + " Moves";
-
-        if(numberOfMoves == 1)
-            title = numberOfMoves + " Move";
-
         var firstMoveProbArray = getMovementDataFromStart(matrix);
-        chart.addSeries(title,
+        chart.addSeries(nameOfMovement,
                 tileArray,
                 firstMoveProbArray);
     }
@@ -77,6 +72,17 @@ public class PlottingService
     {
         var tiles = matrix.numCols();
         var result = new ArrayList<Double>();
+
+        //plot PI Matrix
+        if(matrix.numCols() == 1)
+        {
+            tiles = matrix.numRows();
+            for(int i = 0; i < tiles; i++)
+            {
+                result.add(matrix.get(i, 0));
+            }
+            return result;
+        }
 
         for(int i = 0; i < tiles; i++)
         {

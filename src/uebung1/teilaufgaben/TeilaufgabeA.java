@@ -38,8 +38,8 @@ public class TeilaufgabeA
         System.out.println(probabilityMatrix);
         MatrixTester.checkMarkovMatrix(probabilityMatrix);
 
-        var movements = new HashMap<Integer, SimpleMatrix>();
-        movements.put(1, probabilityMatrix);
+        var movements = new HashMap<String, SimpleMatrix>();
+        movements.put("1 Move", probabilityMatrix);
 
         var copyOfProbMatrix = probabilityMatrix.copy();
 
@@ -51,7 +51,7 @@ public class TeilaufgabeA
             MatrixTester.checkMarkovMatrix(copyOfProbMatrix);
 
             if(i == 1 || i == 2 || i == 3 || i == maxIterations-1)
-                movements.put(i + 1, copyOfProbMatrix);
+                movements.put((i + 1) + " Moves", copyOfProbMatrix);
         }
 
         PlottingService.plotBarChartForGame(movements, BOARD_SIZE, -1, 0);

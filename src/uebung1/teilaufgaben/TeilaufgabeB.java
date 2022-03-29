@@ -100,8 +100,8 @@ public class TeilaufgabeB
         System.out.println(probabilityMatrix);
         MatrixTester.checkMarkovMatrix(probabilityMatrix);
 
-        var movements = new HashMap<Integer, SimpleMatrix>();
-        movements.put(1, probabilityMatrix);
+        var movements = new HashMap<String, SimpleMatrix>();
+        movements.put("1 Move", probabilityMatrix);
 
         var copyOfProbMatrix = probabilityMatrix.copy();
         int maxIterations = 1000;
@@ -111,11 +111,29 @@ public class TeilaufgabeB
             copyOfProbMatrix = probabilityMatrix.mult(copyOfProbMatrix);
             MatrixTester.checkMarkovMatrix(copyOfProbMatrix);
 
-            if(i == 1 || i == 2 || i == 3 || i == 4 || i == maxIterations-1)
-                movements.put(i + 1, copyOfProbMatrix);
+            if(i == maxIterations-1)
+                movements.put((i + 1) + " Moves", copyOfProbMatrix);
         }
 
-        System.out.println(copyOfProbMatrix);
+        //Calculate Gleichgewichtsverteilung
+
+        var pMatrix = probabilityMatrix.copy();
+        var aHomogenous = pMatrix.transpose().minus(SimpleMatrix.identity(pMatrix.numCols()));
+        var aMatrix = aHomogenous.copy();
+
+        for (int j = 0; j < aMatrix.numCols(); j++)
+        {
+            aMatrix.set(aMatrix.numRows() - 1, j, 1);
+        }
+
+        var bMatrix = new SimpleMatrix(aMatrix.numRows(), 1);
+        bMatrix.set(bMatrix.numRows() - 1, 0, 1);
+
+        SimpleMatrix piMatrix = aMatrix.solve(bMatrix);
+        System.out.println(piMatrix);
+        System.out.println();
+
+        movements.put("PI", piMatrix);
 
         //Plot results
 
@@ -128,8 +146,8 @@ public class TeilaufgabeB
             if(i >= inJailFieldStart && i <= inJailFieldStart + numberOfJailFields - 1)
                 continue;
 
-            System.out.println("Field " + (resultArrayCount + 1) + ": " + copyOfProbMatrix.get(0, i));
-            resultArray[resultArrayCount] = copyOfProbMatrix.get(0, i);
+            System.out.println("Field " + (resultArrayCount + 1) + ": " + piMatrix.get(resultArrayCount, 0));
+            resultArray[resultArrayCount] = piMatrix.get(resultArrayCount, 0);
             resultArrayCount++;
         }
         System.out.println();
