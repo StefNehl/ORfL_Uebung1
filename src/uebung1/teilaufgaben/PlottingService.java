@@ -31,7 +31,12 @@ public class PlottingService
         var tileArray = new ArrayList<String>();
         for(int i = 0; i < boardSize; i++)
         {
-            if(jailCount >= 0 && i >= jailIndex && i <= lastJailIndex)
+            if(i == jailIndex)
+            {
+                tileArray.add("JB");
+                continue;
+            }
+            if(jailCount >= 0 && i > jailIndex && i <= lastJailIndex)
             {
                 tileArray.add("J" + jailCount);
                 jailCount++;
