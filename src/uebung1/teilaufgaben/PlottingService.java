@@ -1,3 +1,8 @@
+/*
+Nehl Stefan
+00935188
+ */
+
 package uebung1.teilaufgaben;
 
 import org.ejml.simple.SimpleMatrix;

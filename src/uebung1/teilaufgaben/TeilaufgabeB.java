@@ -1,7 +1,11 @@
+/*
+Nehl Stefan
+00935188
+ */
+
 package uebung1.teilaufgaben;
 
 import org.ejml.simple.SimpleMatrix;
-
 import java.util.HashMap;
 
 public class TeilaufgabeB
@@ -138,8 +142,7 @@ public class TeilaufgabeB
         //Calculate Gleichgewichtsverteilung
 
         var pMatrix = probabilityMatrix.copy();
-        var aHomogenous = pMatrix.transpose().minus(SimpleMatrix.identity(pMatrix.numCols()));
-        var aMatrix = aHomogenous.copy();
+        var aMatrix = pMatrix.transpose().minus(SimpleMatrix.identity(pMatrix.numCols()));
 
         for (int j = 0; j < aMatrix.numCols(); j++)
         {

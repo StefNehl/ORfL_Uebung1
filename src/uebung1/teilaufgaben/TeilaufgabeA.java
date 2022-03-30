@@ -1,7 +1,11 @@
+/*
+Nehl Stefan
+00935188
+ */
+
 package uebung1.teilaufgaben;
 
 import org.ejml.simple.SimpleMatrix;
-
 import java.util.HashMap;
 
 public class TeilaufgabeA
