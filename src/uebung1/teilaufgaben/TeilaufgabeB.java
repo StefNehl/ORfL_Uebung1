@@ -11,13 +11,13 @@ public class TeilaufgabeB
         final int MAX_DICE_NUMBER = 12;
         final int BOARD_SIZE = 40;
 
-        int startField = 0;
-
+        int startField = 0; //Index = field - 1
         int jailField = 10;
+
         int inJailFieldStart = jailField + 1;
         int turnsToGetOutOfJail = 3;
-        int inJailFieldEnd = inJailFieldStart + turnsToGetOutOfJail - 1;
         int numberOfJailFields = turnsToGetOutOfJail;
+        int inJailFieldEnd = inJailFieldStart + numberOfJailFields - 1;
 
         int numberOfStates = BOARD_SIZE + numberOfJailFields;
 
@@ -26,22 +26,37 @@ public class TeilaufgabeB
 
         for(int r = 0; r < probabilityMatrix.numRows(); r++)
         {
-            if(r >= inJailFieldStart && r < inJailFieldEnd )
+            if(r >= inJailFieldStart && r <= inJailFieldEnd )
                 continue;
 
             int columnToStart = r + 1;
-            for(int c = columnToStart; c < columnToStart + MAX_DICE_NUMBER; c++)
+            for(int c = columnToStart; c < columnToStart + MAX_DICE_NUMBER + numberOfJailFields; c++)
             {
-                var diceNumber = c - r ;
-                var numberProb = probService.getDiceProbabilityForNumber(diceNumber);
-
-                if(c >= numberOfStates)
+                //Jump over Jail Fields
+                if(c >= inJailFieldStart && c <= inJailFieldEnd)
                 {
-                    probabilityMatrix.set(r , c - numberOfStates, numberProb);
                     continue;
                 }
+                else if(c > inJailFieldEnd)
+                {
+                    var diceNumber = c - r - numberOfJailFields;
+                    var numberProb = probService.getDiceProbabilityForNumber(diceNumber);
 
-                probabilityMatrix.set(r, c, numberProb);
+                    if(c >= numberOfStates)
+                        probabilityMatrix.set(r , c - numberOfStates, numberProb);
+                    else
+                        probabilityMatrix.set(r, c, numberProb);
+                }
+                else
+                {
+                    var diceNumber = c - r;
+                    var numberProb = probService.getDiceProbabilityForNumber(diceNumber);
+
+                    if(c >= numberOfStates)
+                        probabilityMatrix.set(r , c - numberOfStates, numberProb);
+                    else
+                        probabilityMatrix.set(r, c, numberProb);
+                }
             }
         }
 
@@ -79,21 +94,26 @@ public class TeilaufgabeB
 
         //Get out of Jail
         //If Pasch => get out of jail
-        //For tile 11 = Jail visit
-        //For tile 12 - 14 Jail => get out of Jail rounds
+        //For index 10 = Jail visit
+        //For index 11 - 13 Jail => get out of Jail rounds
+        //For index 14 => start after jail
         int tries = 0;
-        for(int r = inJailFieldStart; r < inJailFieldEnd; r++)
+        for(int r = inJailFieldStart; r <= inJailFieldEnd; r++)
         {
-            var columnToStart = inJailFieldStart + tries;
-            for(int c = columnToStart; c < inJailFieldEnd + MAX_DICE_NUMBER + tries; c++)
+            for(int c = inJailFieldEnd; c <= inJailFieldEnd + MAX_DICE_NUMBER; c++)
             {
-                var diceNumber = c - (inJailFieldStart + tries);
+                var diceNumber = c - inJailFieldEnd;
                 var numberProb = probService.getPaschProbabilityForNumber(diceNumber);
+
+                if(r == inJailFieldEnd)
+                    numberProb = probService.getDiceProbabilityForNumber(diceNumber);
 
                 probabilityMatrix.set(r, c, numberProb);
             }
 
-            probabilityMatrix.set(r, columnToStart, 1 - probService.getPaschProbability());
+            //+1 to get to the next state
+            if(r < inJailFieldEnd)
+                probabilityMatrix.set(r, inJailFieldStart + tries + 1, 1 - probService.getPaschProbability());
             tries++;
         }
 
@@ -111,7 +131,7 @@ public class TeilaufgabeB
             copyOfProbMatrix = probabilityMatrix.mult(copyOfProbMatrix);
             MatrixTester.checkMarkovMatrix(copyOfProbMatrix);
 
-            if(i == maxIterations-1)
+            if(i == 1 || i == maxIterations - 1)
                 movements.put((i + 1) + " Moves", copyOfProbMatrix);
         }
 
@@ -135,23 +155,61 @@ public class TeilaufgabeB
 
         movements.put("PI", piMatrix);
 
+        double maxValue = Double.MIN_VALUE;
+        int maxValueIndex = -1;
+        double minValue = Double.MAX_VALUE;
+        int minValueIndex = -1;
+
+        for(int i = 0; i < piMatrix.numRows(); i++)
+        {
+            if(i == 0 || (i >= inJailFieldStart && i <= inJailFieldEnd))
+                continue;
+
+            double matrixValue = piMatrix.get(i, 0);
+
+            if(matrixValue > maxValue)
+            {
+                maxValue = matrixValue;
+                maxValueIndex = i;
+            }
+
+            if(matrixValue < minValue)
+            {
+                minValue = matrixValue;
+                minValueIndex = i;
+            }
+        }
+
+        int maxValueField = -1;
+        int minValueField = -1;
+
+        if(maxValueIndex < inJailFieldEnd)
+            maxValueField = maxValueIndex + 1;
+        else
+            maxValueField = maxValueIndex + 1 - numberOfJailFields;
+
+        if(minValueIndex < inJailFieldEnd)
+            minValueField = minValueIndex + 1;
+        else
+            minValueField = minValueIndex + 1 - numberOfJailFields;
+
+
         //Plot results
-
-        var resultArray = new double[BOARD_SIZE];
-        int resultArrayCount = 0;
-
         System.out.println("Field Probability: ");
         for(int i = 0; i < copyOfProbMatrix.numCols(); i++)
         {
-            if(i >= inJailFieldStart && i <= inJailFieldStart + numberOfJailFields - 1)
-                continue;
-
-            System.out.println("Field " + (resultArrayCount + 1) + ": " + piMatrix.get(resultArrayCount, 0));
-            resultArray[resultArrayCount] = piMatrix.get(resultArrayCount, 0);
-            resultArrayCount++;
+            System.out.println("Field " + (i + 1) + ": " + piMatrix.get(i, 0));
         }
         System.out.println();
         System.out.println("Highest Probability (not jail or start): ");
+        var valueString = String.format(" Prob: %.4f", (maxValue * 100));
+        System.out.println("Field: " + maxValueField + valueString + "%");
+
+
+        System.out.println();
+        System.out.println("Lowest Probability (not jail or start): ");
+        valueString = String.format(" Prob: %.4f", (minValue * 100));
+        System.out.println("Field: " + minValueField + valueString + "%");
 
         movements.get(maxIterations);
         PlottingService.plotBarChartForGame(movements, numberOfStates, jailField +1, numberOfJailFields);
