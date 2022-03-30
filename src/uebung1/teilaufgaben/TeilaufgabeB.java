@@ -47,7 +47,12 @@ public class TeilaufgabeB
                     var numberProb = probService.getDiceProbabilityForNumber(diceNumber);
 
                     if(c >= numberOfStates)
-                        probabilityMatrix.set(r , c - numberOfStates, numberProb);
+                    {
+                        var newColumnIndex = c - numberOfStates;
+                        if(newColumnIndex > inJailFieldStart)
+                            newColumnIndex += numberOfJailFields;
+                        probabilityMatrix.set(r , newColumnIndex, numberProb);
+                    }
                     else
                         probabilityMatrix.set(r, c, numberProb);
                 }
@@ -57,7 +62,12 @@ public class TeilaufgabeB
                     var numberProb = probService.getDiceProbabilityForNumber(diceNumber);
 
                     if(c >= numberOfStates)
-                        probabilityMatrix.set(r , c - numberOfStates, numberProb);
+                    {
+                        var newColumnIndex = c - numberOfStates;
+                        if(newColumnIndex > inJailFieldStart)
+                            newColumnIndex += numberOfJailFields;
+                        probabilityMatrix.set(r , newColumnIndex, numberProb);
+                    }
                     else
                         probabilityMatrix.set(r, c, numberProb);
                 }
