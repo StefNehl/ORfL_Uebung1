@@ -49,7 +49,10 @@ public class PlottingService
                 continue;
             }
 
-            tileArray.add(i + 1 + "");
+            var fieldNumber = i + 1;
+            if(fieldNumber > lastJailIndex)
+                fieldNumber -= numbersUntilOutOfJail;
+            tileArray.add(fieldNumber + "");
         }
 
         for (String i : moves.keySet())
