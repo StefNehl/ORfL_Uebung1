@@ -54,6 +54,52 @@ public class TeilaufgabeA
                 movements.put((i + 1) + " Moves", copyOfProbMatrix);
         }
 
+        double maxValue = Double.MIN_VALUE;
+        int maxValueIndex = -1;
+        double minValue = Double.MAX_VALUE;
+        int minValueIndex = -1;
+
+        for(int i = 0; i < copyOfProbMatrix.numCols(); i++)
+        {
+            if(i == 0)
+                continue;
+
+            double matrixValue = copyOfProbMatrix.get(0, i);
+
+            if(matrixValue > maxValue)
+            {
+                maxValue = matrixValue;
+                maxValueIndex = i;
+            }
+
+            if(matrixValue < minValue)
+            {
+                minValue = matrixValue;
+                minValueIndex = i;
+            }
+        }
+
+        int maxValueField = maxValueIndex + 1;
+        int minValueField = minValueIndex + 1;
+
+        //Plot results
+        System.out.println("Field Probability: ");
+        for(int i = 0; i < copyOfProbMatrix.numCols(); i++)
+        {
+            System.out.println("Field " + (i + 1) + ": " + copyOfProbMatrix.get(i, 0));
+        }
+        System.out.println();
+        System.out.println("Highest Probability (not jail or start): ");
+        var valueString = String.format(" Prob: %.4f", (maxValue * 100));
+        System.out.println("Field: " + maxValueField + valueString + "%");
+
+
+        System.out.println();
+        System.out.println("Lowest Probability (not jail or start): ");
+        valueString = String.format(" Prob: %.4f", (minValue * 100));
+        System.out.println("Field: " + minValueField + valueString + "%");
+
+        movements.get(maxIterations);
         PlottingService.plotBarChartForGame(movements, BOARD_SIZE, -1, 0);
 
 
